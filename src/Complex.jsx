@@ -1,7 +1,7 @@
 import React from 'react'
 import './App.css'
 
-function Complex() {
+function ComplexForm() {
   // const { formState, register, handleSubmit, setValue } = useForm({
   //   defaultValues: {
   //     firstName: '',
@@ -176,4 +176,4 @@ function Complex() {
   )
 }
 
-export default App
+export default ComplexForm
