@@ -1,19 +1,31 @@
+import { zodResolver } from '@hookform/resolvers/zod'
 import React from 'react'
 import { useForm } from 'react-hook-form'
+import { z } from 'zod'
 import './App.css'
+
+const formSchema = z.object({
+  firstName: z.string().min(4, 'min 4 chars').max(8, 'max 8 chars'),
+  lastName: z.string().min(4, 'min 4 chars').max(8, 'max 8 chars'),
+  email: z.string().email(),
+})
 
 function App() {
   const {
     formState: { errors },
     register,
     handleSubmit,
+    getValues,
+    watch,
+    setValue,
   } = useForm({
     defaultValues: {
-      firstName: 'Truly',
-      lastName: 'Mittal',
+      firstName: '',
+      lastName: '',
       email: '',
     },
     mode: 'all',
+    resolver: zodResolver(formSchema),
   })
 
   console.log(errors)
@@ -32,11 +44,7 @@ function App() {
             type='text'
             className='min-w-full'
             placeholder='First name'
-            {...register('firstName', {
-              required: { value: true, message: 'First name is required' },
-              minLength: { value: 4, message: 'Must be 4 chars in length' },
-              maxLength: { value: 10, message: 'too long' },
-            })}
+            {...register('firstName')}
           />
           {errors.firstName && (
             <p className='text-red-500 inline-flex'>
@@ -49,10 +57,7 @@ function App() {
             type='text'
             className='min-w-full'
             placeholder='Last name'
-            {...register('lastName', {
-              required: { value: true, message: 'Last name is required' },
-              minLength: { value: 4, message: 'Must be 4 chars in length' },
-            })}
+            {...register('lastName')}
           />
           {errors.lastName && (
             <p className='text-red-500 inline-flex'>
@@ -65,12 +70,7 @@ function App() {
             type='text'
             className='min-w-full'
             placeholder='Email'
-            {...register('email', {
-              pattern: {
-                value: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/,
-                message: 'Email should be a valid email',
-              },
-            })}
+            {...register('email')}
           />
           {errors.email && (
             <p className='text-red-500 inline-flex'>{errors.email.message}</p>
@@ -80,9 +80,16 @@ function App() {
           submit
         </button>
       </form>
+
+      <button
+        onClick={() => setValue('firstName', 'Mafia')}
+        className='bg-red-500 hover:bg-red-600 active:bg-red-500 py-2 px-3 text-white uppercase'
+      >
+        Set value of First name
+      </button>
       <div className='my-4 p-4 bg-gray-300'>
         <h3 className='font-bold'>Form values:</h3>
-        <pre className=''>{JSON.stringify({}, null, 2)}</pre>
+        <pre className=''>{JSON.stringify(watch(), null, 2)}</pre>
       </div>
     </div>
   )
