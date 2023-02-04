@@ -24,6 +24,15 @@ function App() {
           />
           <p className='text-red-500 inline-flex'>Lastname is required</p>
         </div>
+        <div className='flex flex-col  items-start space-y-1 '>
+          <input
+            type='text'
+            name='email'
+            className='min-w-full'
+            placeholder='Email'
+          />
+          <p className='text-red-500 inline-flex'>Should be a valid email</p>
+        </div>
         <button className='bg-teal-500 hover:bg-teal-600 active:bg-teal-500 py-2 px-3 text-white uppercase'>
           submit
         </button>
