@@ -1,37 +1,80 @@
 import React from 'react'
+import { useForm } from 'react-hook-form'
 import './App.css'
 
 function App() {
+  const {
+    formState: { errors },
+    register,
+    handleSubmit,
+  } = useForm({
+    defaultValues: {
+      firstName: 'Truly',
+      lastName: 'Mittal',
+      email: '',
+    },
+    mode: 'all',
+  })
+
+  console.log(errors)
+
   return (
     <div className='App'>
       <h1 className='font-black text-2xl'>React Hook Form</h1>
-      <form className='p-4 shadow-lg flex flex-col space-y-4'>
+      <form
+        onSubmit={handleSubmit(values => {
+          alert(JSON.stringify(values, null, 2))
+        })}
+        className='p-4 shadow-lg flex flex-col space-y-4'
+      >
         <div className='flex flex-col  items-start space-y-1 '>
           <input
             type='text'
-            name='firstName'
             className='min-w-full'
             placeholder='First name'
+            {...register('firstName', {
+              required: { value: true, message: 'First name is required' },
+              minLength: { value: 4, message: 'Must be 4 chars in length' },
+              maxLength: { value: 10, message: 'too long' },
+            })}
           />
-          <p className='text-red-500 inline-flex'>Firstname is required</p>
+          {errors.firstName && (
+            <p className='text-red-500 inline-flex'>
+              {errors.firstName.message}
+            </p>
+          )}
         </div>
         <div className='flex flex-col  items-start space-y-1 '>
           <input
             type='text'
-            name='lastName'
             className='min-w-full'
             placeholder='Last name'
+            {...register('lastName', {
+              required: { value: true, message: 'Last name is required' },
+              minLength: { value: 4, message: 'Must be 4 chars in length' },
+            })}
           />
-          <p className='text-red-500 inline-flex'>Lastname is required</p>
+          {errors.lastName && (
+            <p className='text-red-500 inline-flex'>
+              {errors.lastName.message}
+            </p>
+          )}
         </div>
         <div className='flex flex-col  items-start space-y-1 '>
           <input
             type='text'
-            name='email'
             className='min-w-full'
             placeholder='Email'
+            {...register('email', {
+              pattern: {
+                value: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/,
+                message: 'Email should be a valid email',
+              },
+            })}
           />
-          <p className='text-red-500 inline-flex'>Should be a valid email</p>
+          {errors.email && (
+            <p className='text-red-500 inline-flex'>{errors.email.message}</p>
+          )}
         </div>
         <button className='bg-teal-500 hover:bg-teal-600 active:bg-teal-500 py-2 px-3 text-white uppercase'>
           submit
