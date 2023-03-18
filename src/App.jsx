@@ -17,6 +17,10 @@ function App() {
         .min(2, "Last name should have ate least 2 cahracters")
         .max(20, "Too long name provided"),
       email: z.string().email(),
+      address: z.string().min(4, "invalid address").max(255, "invalid address"),
+      postCode: z
+        .string()
+        .regex(/^[1-9][0-9]{3} ?(?!sa|sd|ss)[a-z]{2}$/i, "invalid postal code"),
       birthDate: z
         .string()
         .transform((a) => new Date(a))
@@ -81,6 +85,30 @@ function App() {
           {errors.lastName && (
             <p className="text-red-500 inline-flex">
               {errors.lastName.message}
+            </p>
+          )}
+        </div>
+        <div className="flex flex-col  items-start space-y-1 ">
+          <input
+            type="text"
+            className="min-w-full"
+            placeholder="address"
+            {...register("address")}
+          />
+          {errors.address && (
+            <p className="text-red-500 inline-flex">{errors.address.message}</p>
+          )}
+        </div>
+        <div className="flex flex-col  items-start space-y-1 ">
+          <input
+            type="text"
+            className="min-w-full"
+            placeholder="post code"
+            {...register("postCode")}
+          />
+          {errors.postCode && (
+            <p className="text-red-500 inline-flex">
+              {errors.postCode.message}
             </p>
           )}
         </div>
