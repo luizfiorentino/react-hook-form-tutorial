@@ -1,13 +1,29 @@
 import React from "react";
 import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 
 import "./App.css";
 
 function App() {
+  const formSchema = z.object({
+    firstName: z
+      .string()
+      .min(2, "First name should contain ate least 2 cahracters")
+      .max(20, "too long name provided"),
+    lastName: z
+      .string()
+      .min(2, "Last name should have ate least 2 cahracters")
+      .max(20, "Too long name provided"),
+    email: z.string().email(),
+  });
+
   const {
     formState: { errors },
     register,
     handleSubmit,
+    getValues,
+    setValue,
   } = useForm({
     defaultValues: {
       firstName: "",
@@ -15,6 +31,7 @@ function App() {
       email: "",
     },
     mode: "all",
+    resolver: zodResolver(formSchema),
   });
   return (
     <div className="App">
@@ -30,17 +47,7 @@ function App() {
             type="text"
             className="min-w-full"
             placeholder="First name"
-            {...register("firstName", {
-              required: { value: true, message: "First name is required" },
-              minLength: {
-                value: 2,
-                message: "must contain at least 2 characters",
-              },
-              maxLength: {
-                value: 20,
-                message: "must contain at most 20 characters",
-              },
-            })}
+            {...register("firstName")}
           />
           {errors.firstName && (
             <p className="text-red-500 inline-flex">
@@ -54,17 +61,7 @@ function App() {
             type="text"
             className="min-w-full"
             placeholder="Last name"
-            {...register("lastName", {
-              required: { value: true, message: "Last name is required" },
-              minLength: {
-                value: 2,
-                message: "must contain at least 2 characters",
-              },
-              maxLength: {
-                value: 20,
-                message: "must contain at most 20 characters",
-              },
-            })}
+            {...register("lastName")}
           />
           {errors.lastName && (
             <p className="text-red-500 inline-flex">
@@ -77,13 +74,7 @@ function App() {
             type="text"
             className="min-w-full"
             placeholder="Email"
-            {...register("email", {
-              required: { value: true, message: "Plaease provide email" },
-              pattern: {
-                value: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/,
-                message: "Please provide a valid email address",
-              },
-            })}
+            {...register("email")}
           />
           {errors.email && (
             <p className="text-red-500 inline-flex">{errors.email.message}</p>
@@ -93,9 +84,15 @@ function App() {
           submit
         </button>
       </form>
+      <button
+        onClick={() => setValue("firstName", "Julinho")}
+        className="bg-blue-500 hover:bg-blue-600 active:bg-blue-500 py-2 px-3 text-white uppercase"
+      >
+        Set Value First Name
+      </button>
       <div className="my-4 p-4 bg-gray-300">
         <h3 className="font-bold">Form values:</h3>
-        <pre className="">{JSON.stringify({}, null, 2)}</pre>
+        <pre className="">{JSON.stringify(getValues(), null, 2)}</pre>
       </div>
     </div>
   );
