@@ -6,23 +6,32 @@ import { z } from "zod";
 import "./App.css";
 
 function App() {
-  const formSchema = z.object({
-    firstName: z
-      .string()
-      .min(2, "First name should contain ate least 2 cahracters")
-      .max(20, "too long name provided"),
-    lastName: z
-      .string()
-      .min(2, "Last name should have ate least 2 cahracters")
-      .max(20, "Too long name provided"),
-    email: z.string().email(),
-    birthDate: z
-      .string()
-      .transform((a) => new Date(a))
-      .refine((date) => {
-        return date < new Date(Date.now());
-      }, "Please provide a valid date"),
-  });
+  const formSchema = z
+    .object({
+      firstName: z
+        .string()
+        .min(2, "First name should contain ate least 2 cahracters")
+        .max(20, "too long name provided"),
+      lastName: z
+        .string()
+        .min(2, "Last name should have ate least 2 cahracters")
+        .max(20, "Too long name provided"),
+      email: z.string().email(),
+      birthDate: z
+        .string()
+        .transform((a) => new Date(a))
+        .refine((date) => {
+          return date < new Date(Date.now());
+        }, "Please provide a valid date"),
+      password: z
+        .string()
+        .min(4, "your password must have at least 4 characters"),
+      confirmPassword: z.string(),
+    })
+    .refine((value) => value.password === value.confirmPassword, {
+      message: "passwords don't match",
+      path: ["confirmPassword"],
+    });
 
   const {
     formState: { errors },
@@ -99,6 +108,32 @@ function App() {
           />
           {errors.email && (
             <p className="text-red-500 inline-flex">{errors.email.message}</p>
+          )}
+        </div>
+        <div className="flex flex-col  items-start space-y-1 ">
+          <input
+            type="password"
+            className="min-w-full"
+            placeholder="choose a password"
+            {...register("password")}
+          />
+          {errors.password && (
+            <p className="text-red-500 inline-flex">
+              {errors.password.message}
+            </p>
+          )}
+        </div>
+        <div className="flex flex-col  items-start space-y-1 ">
+          <input
+            type="password"
+            className="min-w-full"
+            placeholder="confirm password"
+            {...register("confirmPassword")}
+          />
+          {errors.confirmPassword && (
+            <p className="text-red-500 inline-flex">
+              {errors.confirmPassword.message}
+            </p>
           )}
         </div>
         <button className="bg-teal-500 hover:bg-teal-600 active:bg-teal-500 py-2 px-3 text-white uppercase">
