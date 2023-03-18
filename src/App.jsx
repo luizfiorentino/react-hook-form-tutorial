@@ -16,6 +16,12 @@ function App() {
       .min(2, "Last name should have ate least 2 cahracters")
       .max(20, "Too long name provided"),
     email: z.string().email(),
+    birthDate: z
+      .string()
+      .transform((a) => new Date(a))
+      .refine((date) => {
+        return date < new Date(Date.now());
+      }, "Please provide a valid date"),
   });
 
   const {
@@ -69,6 +75,21 @@ function App() {
             </p>
           )}
         </div>
+
+        <div className="flex flex-col  items-start space-y-1 ">
+          <input
+            type="date"
+            className="min-w-full"
+            placeholder="Date of Birth"
+            {...register("birthDate")}
+          />
+          {errors.birthDate && (
+            <p className="text-red-500 inline-flex">
+              {errors.birthDate.message}
+            </p>
+          )}
+        </div>
+
         <div className="flex flex-col  items-start space-y-1 ">
           <input
             type="text"
