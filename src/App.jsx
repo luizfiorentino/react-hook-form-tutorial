@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useForm } from "react-hook-form";
+import { get, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
+import { Schema, z } from "zod";
 
 import "./App.css";
 
@@ -10,15 +10,16 @@ function App() {
   const [media, setMedia] = useState("");
   const knowUs = ["", "friend", "coworker", "internet", "tiktok"];
   const [postCodeValidation, setPostCodeValidation] = useState(false);
+  const [infos, setInfos] = useState({ postCode: "", number: "" });
 
-  useEffect(() => {
-    return async () => {
-      const apiUrl = `https://postcode-nl.onrender.com/validate/postcode?postcode=1069KE&number=114`;
-      const response = await axios.get(apiUrl);
-      console.log("response", response);
-      setPostCodeValidation(response.data.valid);
-    };
-  }, [postCodeValidation]);
+  // useEffect(() => {
+  //   return async () => {
+  //     const apiUrl = `https://postcode-nl.onrender.com/validate/postcode?postcode=1069KE&number=114`;
+  //     const response = await axios.get(apiUrl);
+  //     console.log("response", response);
+  //     setPostCodeValidation(response.data.valid);
+  //   };
+  // }, [postCodeValidation]);
 
   console.log("postCodeValidation", postCodeValidation);
   console.log("media", media);
@@ -71,6 +72,33 @@ function App() {
     mode: "all",
     resolver: zodResolver(formSchema),
   });
+
+  //console.log("addressInfos", addressInfos);
+  //console.log("getValues()", getValues());
+
+  async function postCodeCheck() {
+    try {
+      const values = getValues();
+      const addressInfos = {
+        postCode: values.postCode,
+        number: values.number,
+      };
+      // const apiUrl = `https://postcode-nl.onrender.com/validate/postcode?postcode=${addressInfos.postCode}&number=${addressInfos.number}`;
+      const apiUrl = `https://postcode-nl.onrender.com/validate/postcode?postcode=${addressInfos.postCode}&number=${addressInfos.number}`;
+      const response = await axios.get(apiUrl);
+      console.log("URL", apiUrl, "hey some data here!");
+      console.log("response", response);
+      setInfos({
+        postCode: getValues().postCode,
+        number: getValues().number,
+      });
+      setPostCodeValidation(response.data.valid);
+    } catch (e) {
+      console.log(e.message);
+    }
+  }
+
+  console.log("postCodeValid?", postCodeValidation, "infos:", infos);
 
   return (
     <div className="App">
@@ -229,7 +257,10 @@ function App() {
           )}
         </div>
 
-        <button className="bg-teal-500 hover:bg-teal-600 active:bg-teal-500 py-2 px-3 text-white uppercase">
+        <button
+          className="bg-teal-500 hover:bg-teal-600 active:bg-teal-500 py-2 px-3 text-white uppercase"
+          onClick={postCodeCheck}
+        >
           submit
         </button>
       </form>
