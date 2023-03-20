@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -6,6 +6,9 @@ import { z } from "zod";
 import "./App.css";
 
 function App() {
+  const [media, setMedia] = useState("");
+  const knowUs = ["", "friend", "coworker", "internet", "tiktok"];
+
   const formSchema = z
     .object({
       firstName: z
@@ -31,6 +34,7 @@ function App() {
         .string()
         .min(4, "your password must have at least 4 characters"),
       confirmPassword: z.string(),
+      knowMedia: z.string().nonempty("choose a media"),
     })
     .refine((value) => value.password === value.confirmPassword, {
       message: "passwords don't match",
@@ -52,6 +56,8 @@ function App() {
     mode: "all",
     resolver: zodResolver(formSchema),
   });
+
+  console.log("media", media);
   return (
     <div className="App">
       <h1 className="font-black text-2xl">React Hook Form</h1>
@@ -152,18 +158,23 @@ function App() {
           )}
         </div>
         <div className="flex flex-col  items-start space-y-1 ">
-          <input
-            type="password"
-            className="min-w-full"
-            placeholder="confirm password"
-            {...register("confirmPassword")}
-          />
-          {errors.confirmPassword && (
+          <label>How did you meet us?</label>
+          <select
+            value={media}
+            onChange={(e) => setMedia(e.target.value)}
+            {...register("knowMedia")}
+          >
+            {knowUs.map((media) => (
+              <option key={media}>{media}</option>
+            ))}
+          </select>
+          {errors.knowMedia && (
             <p className="text-red-500 inline-flex">
-              {errors.confirmPassword.message}
+              {errors.knowMedia.message}
             </p>
           )}
         </div>
+
         <button className="bg-teal-500 hover:bg-teal-600 active:bg-teal-500 py-2 px-3 text-white uppercase">
           submit
         </button>
