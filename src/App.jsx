@@ -209,11 +209,9 @@ function App() {
         <div className="flex flex-col  items-start space-y-1 ">
           <label>How did you hear about us?</label>
           <select
-            value={media}
-            onChange={(e) => {
-              setMedia(e.target.value);
-            }}
             {...register("knowMedia")}
+            value={media}
+            onChange={(e) => setMedia(e.target.value)}
           >
             {knowUs.map((media) => {
               return (
