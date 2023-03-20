@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -8,22 +9,36 @@ import "./App.css";
 function App() {
   const [media, setMedia] = useState("");
   const knowUs = ["", "friend", "coworker", "internet", "tiktok"];
+  const [postCodeValidation, setPostCodeValidation] = useState(false);
+
+  useEffect(() => {
+    return async () => {
+      const apiUrl = `https://postcode-nl.onrender.com/validate/postcode?postcode=1069KE&number=114`;
+      const response = await axios.get(apiUrl);
+      console.log("response", response);
+      setPostCodeValidation(response.data.valid);
+    };
+  }, [postCodeValidation]);
+
+  console.log("postCodeValidation", postCodeValidation);
+  console.log("media", media);
 
   const formSchema = z
     .object({
       firstName: z
         .string()
-        .min(2, "First name should contain ate least 2 cahracters")
+        .min(2, "First name should contain ate least 2 characters")
         .max(20, "too long name provided"),
       lastName: z
         .string()
-        .min(2, "Last name should have ate least 2 cahracters")
+        .min(2, "Last name should have ate least 2 characters")
         .max(20, "Too long name provided"),
       email: z.string().email(),
       address: z.string().min(4, "invalid address").max(255, "invalid address"),
+      number: z.string().min(1, "invalid house number"),
       postCode: z
         .string()
-        .regex(/^[1-9][0-9]{3} ?(?!sa|sd|ss)[a-z]{2}$/i, "invalid postal code"),
+        .regex(/^[1-9][0-9]{3} ?(?!sa|sd|ss)[a-z]{2}$/i, "invalid post code"),
       birthDate: z
         .string()
         .transform((a) => new Date(a))
@@ -57,7 +72,6 @@ function App() {
     resolver: zodResolver(formSchema),
   });
 
-  console.log("media", media);
   return (
     <div className="App">
       <h1 className="font-black text-2xl">React Hook Form</h1>
@@ -103,6 +117,28 @@ function App() {
           />
           {errors.address && (
             <p className="text-red-500 inline-flex">{errors.address.message}</p>
+          )}
+        </div>
+        {/* <div className="flex flex-col  items-start space-y-1 ">
+          <input
+            type="text"
+            className="min-w-full"
+            placeholder="address"
+            {...register("address")}
+          />
+          {errors.houseNumber && (
+            <p className="text-red-500 inline-flex">{errors.address.message}</p>
+          )}
+        </div> */}
+        <div className="flex flex-col  items-start space-y-1 ">
+          <input
+            type="text"
+            className="min-w-full"
+            placeholder="number"
+            {...register("number")}
+          />
+          {errors.number && (
+            <p className="text-red-500 inline-flex">{errors.number.message}</p>
           )}
         </div>
         <div className="flex flex-col  items-start space-y-1 ">
@@ -158,16 +194,28 @@ function App() {
           )}
         </div>
         <div className="flex flex-col  items-start space-y-1 ">
-          <label>How did you meet us?</label>
-          <select
-            value={media}
-            onChange={(e) => setMedia(e.target.value)}
-            {...register("knowMedia")}
-          >
+          <input
+            type="password"
+            className="min-w-full"
+            placeholder="confirm password"
+            {...register("confirmPassword")}
+          />
+          {errors.confirmPassword && (
+            <p className="text-red-500 inline-flex">
+              {errors.confirmPassword.message}
+            </p>
+          )}
+        </div>
+        <div className="flex flex-col  items-start space-y-1 ">
+          <label>How did you hear about us?</label>
+          <select onChange={(e) => setMedia(e.target.value)}>
             {knowUs.map((media) => (
-              <option key={media}>{media}</option>
+              <option key={media} {...register("knowMedia")}>
+                {media}
+              </option>
             ))}
           </select>
+
           {errors.knowMedia && (
             <p className="text-red-500 inline-flex">
               {errors.knowMedia.message}
