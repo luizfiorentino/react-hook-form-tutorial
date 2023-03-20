@@ -12,15 +12,6 @@ function App() {
   const [postCodeValidation, setPostCodeValidation] = useState(false);
   const [infos, setInfos] = useState({ postCode: "", number: "" });
 
-  // useEffect(() => {
-  //   return async () => {
-  //     const apiUrl = `https://postcode-nl.onrender.com/validate/postcode?postcode=1069KE&number=114`;
-  //     const response = await axios.get(apiUrl);
-  //     console.log("response", response);
-  //     setPostCodeValidation(response.data.valid);
-  //   };
-  // }, [postCodeValidation]);
-
   console.log("postCodeValidation", postCodeValidation);
   console.log("media", media);
 
@@ -56,7 +47,6 @@ function App() {
       message: "passwords don't match",
       path: ["confirmPassword"],
     });
-
   const {
     formState: { errors },
     register,
@@ -74,7 +64,7 @@ function App() {
   });
 
   //console.log("addressInfos", addressInfos);
-  //console.log("getValues()", getValues());
+  console.log("getValues()", getValues());
 
   async function postCodeCheck() {
     try {
@@ -136,6 +126,9 @@ function App() {
             </p>
           )}
         </div>
+        {postCodeValidation === false ? (
+          <p>The address doesn't match the informed post code</p>
+        ) : undefined}
         <div className="flex flex-col  items-start space-y-1 ">
           <input
             type="text"
@@ -147,17 +140,7 @@ function App() {
             <p className="text-red-500 inline-flex">{errors.address.message}</p>
           )}
         </div>
-        {/* <div className="flex flex-col  items-start space-y-1 ">
-          <input
-            type="text"
-            className="min-w-full"
-            placeholder="address"
-            {...register("address")}
-          />
-          {errors.houseNumber && (
-            <p className="text-red-500 inline-flex">{errors.address.message}</p>
-          )}
-        </div> */}
+
         <div className="flex flex-col  items-start space-y-1 ">
           <input
             type="text"
