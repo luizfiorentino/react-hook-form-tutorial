@@ -208,12 +208,20 @@ function App() {
         </div>
         <div className="flex flex-col  items-start space-y-1 ">
           <label>How did you hear about us?</label>
-          <select onChange={(e) => setMedia(e.target.value)}>
-            {knowUs.map((media) => (
-              <option key={media} {...register("knowMedia")}>
-                {media}
-              </option>
-            ))}
+          <select
+            value={media}
+            onChange={(e) => {
+              setMedia(e.target.value);
+            }}
+            {...register("knowMedia")}
+          >
+            {knowUs.map((media) => {
+              return (
+                <option key={media} value={media}>
+                  {media}
+                </option>
+              );
+            })}
           </select>
 
           {errors.knowMedia && (
