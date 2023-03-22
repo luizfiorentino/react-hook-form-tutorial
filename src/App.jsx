@@ -42,7 +42,9 @@ function App() {
         .min(4, "your password must have at least 4 characters"),
       confirmPassword: z.string(),
       knowMedia: z.string().nonempty("choose a media"),
+      postCodeValidator: z.literal(true),
     })
+
     .refine((value) => value.password === value.confirmPassword, {
       message: "passwords don't match",
       path: ["confirmPassword"],
@@ -126,9 +128,7 @@ function App() {
             </p>
           )}
         </div>
-        {postCodeValidation === false ? (
-          <p>The address doesn't match the informed post code</p>
-        ) : undefined}
+
         <div className="flex flex-col  items-start space-y-1 ">
           <input
             type="text"
@@ -162,6 +162,27 @@ function App() {
           {errors.postCode && (
             <p className="text-red-500 inline-flex">
               {errors.postCode.message}
+            </p>
+          )}
+        </div>
+        <div className="flex flex-col  items-start space-y-1 ">
+          <button
+            type="text"
+            className="min-w-full"
+            placeholder="post code"
+            // {...register("postCodeValidator")}
+            onClick={postCodeCheck}
+          >
+            Check post code
+          </button>
+          {postCodeValidation === false ? (
+            <p>enter a valid post code</p>
+          ) : (
+            <p>Good post code</p>
+          )}
+          {errors.postCodeValidator && (
+            <p className="text-red-500 inline-flex">
+              {/* {errors.postCodeValidator.message} */}
             </p>
           )}
         </div>
@@ -240,10 +261,7 @@ function App() {
           )}
         </div>
 
-        <button
-          className="bg-teal-500 hover:bg-teal-600 active:bg-teal-500 py-2 px-3 text-white uppercase"
-          onClick={postCodeCheck}
-        >
+        <button className="bg-teal-500 hover:bg-teal-600 active:bg-teal-500 py-2 px-3 text-white uppercase">
           submit
         </button>
       </form>
